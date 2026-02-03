@@ -35,6 +35,7 @@ export default class TicketService {
     ) ? true : false;
   }
 
+  // Validate ticket type request is instance of TicketTypeRequest class.
   #validateTicketTypeRequestType(ticketTypeRequest) {
     return ticketTypeRequest instanceof TicketTypeRequest ? true : false;
   }
