@@ -8,7 +8,17 @@ export default class TicketService {
 
   purchaseTickets(accountId, ...ticketTypeRequests) {
 
-    return this.#validateAccountId(accountId) ? true : false;
+    console.log(accountId)
+    console.log(ticketTypeRequests)
+
+    if (
+      this.#validateAccountId(accountId) == true &&
+      this.#validateTicketTypeRequest(ticketTypeRequests) == true
+    ) {
+      return true
+    } else {
+      return false
+    }
     
     // throw InvalidPurchaseException
   }
@@ -16,5 +26,10 @@ export default class TicketService {
   // Validate account id is of type number and more than zero.
   #validateAccountId(accountId) {
     return typeof accountId == "number" && accountId > 0 ? true : false;
+  }
+
+  // Validate ticket type requests.
+  #validateTicketTypeRequest(ticketTypeRequests) {
+    return false;
   }
 }
