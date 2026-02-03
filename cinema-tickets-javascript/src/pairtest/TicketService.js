@@ -13,7 +13,7 @@ export default class TicketService {
 
     if (
       this.#validateAccountId(accountId) == true &&
-      this.#validateTicketTypeRequest(ticketTypeRequests) == true
+      this.#validateTicketTypeRequests(ticketTypeRequests) == true
     ) {
       return true
     } else {
@@ -29,7 +29,13 @@ export default class TicketService {
   }
 
   // Validate ticket type requests.
-  #validateTicketTypeRequest(ticketTypeRequests) {
-    return false;
+  #validateTicketTypeRequests(ticketTypeRequests) {
+    return ticketTypeRequests.every(
+      (request) => this.#validateTicketTypeRequestType(request)
+    ) ? true : false;
+  }
+
+  #validateTicketTypeRequestType(ticketTypeRequest) {
+    return ticketTypeRequest instanceof TicketTypeRequest ? true : false;
   }
 }
