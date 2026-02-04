@@ -12,13 +12,13 @@ export default class TicketService {
     const validationService = new ValidationService();
 
     if (
-      validationService.validateAccountId(accountId) == true &&
-      validationService.validateTicketTypeRequestType(ticketTypeRequests) ==
-        true &&
+      validationService.validateAccountId(accountId) &&
+      validationService.validateTicketTypeRequestType(ticketTypeRequests) &&
       validationService.validateNumberOfTicketsRequested(
         ticketTypeRequests,
         25,
-      ) == true
+      ) &&
+      validationService.validateAdultPresent(ticketTypeRequests)
     ) {
       const totalCostOfChargeableSeats =
         this.#getTotalCostOfChargeableSeats(ticketTypeRequests);

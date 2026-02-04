@@ -84,7 +84,7 @@ describe("validateNumberOfTicketsRequested method", () => {
     ).toThrow(Error);
   });
 
-  test(`valid scenario (ticketTypeRequests = [new TicketTypeRequest('ADULT', 50)], maxTickets = 49)`, () => {
+  test(`invalid scenario (ticketTypeRequests = [new TicketTypeRequest('ADULT', 50)], maxTickets = 49)`, () => {
     const ticketTypeRequests = [new TicketTypeRequest("ADULT", 50)];
     const maxTickets = 49;
 
@@ -93,6 +93,32 @@ describe("validateNumberOfTicketsRequested method", () => {
         ticketTypeRequests,
         maxTickets,
       ),
+    ).toThrow(Error);
+  });
+});
+
+describe("validateAdultPresent method", () => {
+  test(`valid scenario (ticketTypeRequests = [new TicketTypeRequest('ADULT', 1)])`, () => {
+    const ticketTypeRequests = [new TicketTypeRequest("ADULT", 1)];
+
+    expect(validationService.validateAdultPresent(ticketTypeRequests)).toBe(
+      true,
+    );
+  });
+
+  test(`invalid scenario (ticketTypeRequests = [new TicketTypeRequest('CHILD', 1)])`, () => {
+    const ticketTypeRequests = [new TicketTypeRequest("CHILD", 1)];
+
+    expect(() =>
+      validationService.validateAdultPresent(ticketTypeRequests),
+    ).toThrow(Error);
+  });
+
+  test(`invalid scenario (ticketTypeRequests = [new TicketTypeRequest('INFANT', 1)])`, () => {
+    const ticketTypeRequests = [new TicketTypeRequest("INFANT", 1)];
+
+    expect(() =>
+      validationService.validateAdultPresent(ticketTypeRequests),
     ).toThrow(Error);
   });
 });
