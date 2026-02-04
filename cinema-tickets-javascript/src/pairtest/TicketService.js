@@ -23,9 +23,13 @@ export default class TicketService {
     // throw InvalidPurchaseException
   }
 
-  // Validate account id is of type number and more than zero.
+  // Validate account id is of type int and more than zero.
   #validateAccountId(accountId) {
-    return typeof accountId == "number" && accountId > 0 ? true : false;
+    if (Number.isInteger(accountId) && accountId > 0) {
+      return true
+    } else {
+      return false
+    }
   }
 
   // Validate ticket type requests.
