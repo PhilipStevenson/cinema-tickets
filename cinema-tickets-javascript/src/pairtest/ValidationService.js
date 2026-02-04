@@ -40,4 +40,27 @@ export default class ValidationService {
       throw new Error(`number of requested tickets exceeds ${maxTickets}`);
     }
   }
+
+  // Validate child and infant tickets are requested alongside adult ticket.
+  validateAdultPresent(ticketTypeRequests) {
+    const initialValue = 0;
+    const totalNumberOfAdultTickets = ticketTypeRequests.reduce(
+      (accumulator, currentValue) => {
+        if (currentValue.getTicketType() == "ADULT") {
+          return accumulator + currentValue.getNoOfTickets();
+        } else {
+          return accumulator + 0;
+        }
+      },
+      initialValue,
+    );
+
+    if (totalNumberOfAdultTickets > 0) {
+      return true;
+    } else {
+      throw new Error(
+        `child and infant tickets must be accompanied by an adult ticket`,
+      );
+    }
+  }
 }
