@@ -1,5 +1,4 @@
-import TicketTypeRequest from './lib/TicketTypeRequest.js';
-import InvalidPurchaseException from './lib/InvalidPurchaseException.js';
+import ValidationService from './ValidationService.js';
 
 export default class TicketService {
   /**
@@ -11,36 +10,17 @@ export default class TicketService {
     console.log(accountId)
     console.log(ticketTypeRequests)
 
+    const validationService = new ValidationService
+
     if (
-      this.#validateAccountId(accountId) == true &&
-      this.#validateTicketTypeRequests(ticketTypeRequests) == true
+      validationService.validateAccountId(accountId) == true &&
+      validationService.validateTicketTypeRequestType(ticketTypeRequests) == true &&
+      validationService.validateNumberOfTicketsRequested(ticketTypeRequests, 25) == true
     ) {
-      return true
+      return true;
     } else {
-      return false
+      return false;
+      // throw InvalidPurchaseException
     }
-    
-    // throw InvalidPurchaseException
-  }
-
-  // Validate account id is of type int and more than zero.
-  #validateAccountId(accountId) {
-    if (Number.isInteger(accountId) && accountId > 0) {
-      return true
-    } else {
-      return false
-    }
-  }
-
-  // Validate ticket type requests.
-  #validateTicketTypeRequests(ticketTypeRequests) {
-    return ticketTypeRequests.every(
-      (request) => this.#validateTicketTypeRequestType(request)
-    ) ? true : false;
-  }
-
-  // Validate ticket type request is instance of TicketTypeRequest class.
-  #validateTicketTypeRequestType(ticketTypeRequest) {
-    return ticketTypeRequest instanceof TicketTypeRequest ? true : false;
   }
 }
