@@ -1,3 +1,6 @@
+import InvalidPurchaseException from "./lib/InvalidPurchaseException.js";
+import SeatReservationService from "../thirdparty/seatbooking/SeatReservationService.js";
+import TicketPaymentService from "../thirdparty/paymentgateway/TicketPaymentService.js";
 import ValidationService from "./ValidationService.js";
 
 export default class TicketService {
@@ -6,9 +9,6 @@ export default class TicketService {
    */
 
   purchaseTickets(accountId, ...ticketTypeRequests) {
-    console.log(accountId);
-    console.log(ticketTypeRequests);
-
     const validationService = new ValidationService();
 
     if (
@@ -20,10 +20,30 @@ export default class TicketService {
         25,
       ) == true
     ) {
-      return true;
+      const totalCostOfChargeableSeats =
+        this.#getTotalCostOfChargeableSeats(ticketTypeRequests);
+      const numberOfChargeableSeats =
+        this.#getNumberOfChargeableSeats(ticketTypeRequests);
+
+      const ticketPaymentService = new TicketPaymentService();
+
+      try {
+        ticketPaymentService.makePayment(accountId, totalCostOfChargeableSeats);
+      } catch (error) {
+        throw new InvalidPurchaseException(error);
+      }
+
+      const seatReservationService = new SeatReservationService();
+
+      try {
+        seatReservationService.reserveSeat(accountId, numberOfChargeableSeats);
+      } catch (error) {
+        throw new InvalidPurchaseException(error);
+      }
+
+      return `Resevation successful, total number of chargeable seats: ${numberOfChargeableSeats}, total cost of chargeable seats: £${totalCostOfChargeableSeats}`;
     } else {
-      return false;
-      // throw InvalidPurchaseException
+      throw new InvalidPurchaseException(error);
     }
   }
 
@@ -33,7 +53,7 @@ export default class TicketService {
     const totalNumberOfChargeableSeats = ticketTypeRequests.reduce(
       (accumulator, currentValue) => {
         if (currentValue.getNoOfTickets() != "INFANT") {
-          accumulator + currentValue.getNoOfTickets();
+          return accumulator + currentValue.getNoOfTickets();
         }
       },
       initialValue,
@@ -48,9 +68,9 @@ export default class TicketService {
     const totalCostOfChargeableSeats = ticketTypeRequests.reduce(
       (accumulator, currentValue) => {
         if (currentValue.getTicketType() == "CHILD") {
-          accumulator + currentValue.getNoOfTickets() * 15;
+          return accumulator + currentValue.getNoOfTickets() * 15;
         } else if (currentValue.getTicketType() == "ADULT") {
-          accumulator + currentValue.getNoOfTickets() * 25;
+          return accumulator + currentValue.getNoOfTickets() * 25;
         }
       },
       initialValue,
