@@ -1,34 +1,33 @@
-import TicketService from '../src/pairtest/TicketService.js';
-import TicketTypeRequest from '../src/pairtest/lib/TicketTypeRequest.js';
+import TicketService from "../src/pairtest/TicketService.js";
+import TicketTypeRequest from "../src/pairtest/lib/TicketTypeRequest.js";
 
-describe('Test TicketService class', () => {
+describe("purchaseTickets method", () => {
   const ticketService = new TicketService();
 
-  test('purchaseTickets valid account id (1) and single adult ticket', () => {
-    const accountId = 1
-    const ticketTypeRequest = new TicketTypeRequest('ADULT', 1)
+  test(`valid scenario (accountId = 1, ticketTypeRequest = new TicketTypeRequest('ADULT', 1))`, () => {
+    const accountId = 1;
+    const ticketTypeRequests = new TicketTypeRequest("ADULT", 1);
 
-    expect(
-      ticketService.purchaseTickets(
-        accountId,
-        ticketTypeRequest
-      )
-    ).toBe(true);
-  })
+    expect(ticketService.purchaseTickets(accountId, ticketTypeRequests)).toBe(
+      `Resevation successful, total number of chargeable seats: 1, total cost of chargeable seats: £25`,
+    );
+  });
 
-  test('purchaseTickets invalid account id (0)', () => {
-    const accountId = 0
+  test(`valid scenario (accountId = 2, ticketTypeRequest = new TicketTypeRequest('ADULT', 2))`, () => {
+    const accountId = 2;
+    const ticketTypeRequests = new TicketTypeRequest("ADULT", 2);
 
-    expect(
-      ticketService.purchaseTickets(accountId)
-    ).toBe(false);
-  })
+    expect(ticketService.purchaseTickets(accountId, ticketTypeRequests)).toBe(
+      `Resevation successful, total number of chargeable seats: 2, total cost of chargeable seats: £50`,
+    );
+  });
 
-  test('purchaseTickets invalid account id ("foo")', () => {
-    const accountId = "foo"
+  test(`invalid scenario (accountId = 0, ticketTypeRequest = new TicketTypeRequest('ADULT', 1))`, () => {
+    const accountId = 0;
+    const ticketTypeRequests = new TicketTypeRequest("ADULT", 1);
 
-    expect(
-      ticketService.purchaseTickets(accountId)
-    ).toBe(false);
-  })
-})
+    expect(() =>
+      ticketService.purchaseTickets(accountId, ticketTypeRequests),
+    ).toThrow(TypeError);
+  });
+});
